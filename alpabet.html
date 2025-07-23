@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Matching Game</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+        h2 {
+            font-size: 28px;
+            color: #6A1B9A;
+        }
+        .game-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 20px;
+        }
+        .box, .drop-zone {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px gray;
+            cursor: grab;
+        }
+        .drop-zone {
+            border: 2px dashed #6A1B9A;
+            background-color: #f8f8f8;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #FF80AB;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Match the Uppercase with the Lowercase Letter</h2>
+    <p>Drag the uppercase letter to its matching lowercase box.</p>
+
+    <div class="game-container">
+        <div id="uppercaseLetters"></div>
+        <div id="lowercaseLetters"></div>
+    </div>
+
+    <button onclick="generateNewSet()">Next Round</button>
+
+    <audio id="correctSound" src="correct.mp3"></audio>
+    <audio id="wrongSound" src="wrong.mp3"></audio>
+
+    <script>
+        const letterPairs = [
+            { upper: "A", lower: "a" }, { upper: "B", lower: "b" }, { upper: "C", lower: "c" },
+            { upper: "D", lower: "d" }, { upper: "E", lower: "e" }, { upper: "F", lower: "f" },
+            { upper: "G", lower: "g" }, { upper: "H", lower: "h" }, { upper: "I", lower: "i" },
+            { upper: "J", lower: "j" }, { upper: "K", lower: "k" }, { upper: "L", lower: "l" },
+            { upper: "M", lower: "m" }, { upper: "N", lower: "n" }, { upper: "O", lower: "o" },
+            { upper: "P", lower: "p" }, { upper: "Q", lower: "q" }, { upper: "R", lower: "r" },
+            { upper: "S", lower: "s" }, { upper: "T", lower: "t" }, { upper: "U", lower: "u" },
+            { upper: "V", lower: "v" }, { upper: "W", lower: "w" }, { upper: "X", lower: "x" },
+            { upper: "Y", lower: "y" }, { upper: "Z", lower: "z" }
+        ];
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function generateNewSet() {
+            let shuffledLetters = shuffle([...letterPairs]).slice(0, 5);
+
+            let uppercaseDiv = document.getElementById("uppercaseLetters");
+            let lowercaseDiv = document.getElementById("lowercaseLetters");
+
+            uppercaseDiv.innerHTML = "";
+            lowercaseDiv.innerHTML = "";
+
+            // Separate shuffling to jumble the order
+            let shuffledUppercase = shuffle([...shuffledLetters]);
+            let shuffledLowercase = shuffle([...shuffledLetters]);
+
+            shuffledUppercase.forEach(pair => {
+                let upperBox = document.createElement("div");
+                upperBox.classList.add("box");
+                upperBox.textContent = pair.upper;
+                upperBox.setAttribute("draggable", true);
+                upperBox.setAttribute("data-letter", pair.upper);
+                upperBox.addEventListener("dragstart", dragStart);
+                uppercaseDiv.appendChild(upperBox);
+            });
+
+            shuffledLowercase.forEach(pair => {
+                let lowerBox = document.createElement("div");
+                lowerBox.classList.add("drop-zone");
+                lowerBox.textContent = pair.lower;
+                lowerBox.setAttribute("data-letter", pair.upper);
+                lowerBox.addEventListener("dragover", allowDrop);
+                lowerBox.addEventListener("drop", drop);
+                lowercaseDiv.appendChild(lowerBox);
+            });
+        }
+
+        function dragStart(event) {
+            event.dataTransfer.setData("text", event.target.getAttribute("data-letter"));
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            let draggedLetter = event.dataTransfer.getData("text");
+            let dropTarget = event.target.getAttribute("data-letter");
+
+            if (draggedLetter === dropTarget) {
+                event.target.textContent = draggedLetter;
+                document.getElementById("correctSound").play();
+            } else {
+                document.getElementById("wrongSound").play();
+            }
+        }
+
+        generateNewSet();
+    </script>
+
+</body>
+</html>
