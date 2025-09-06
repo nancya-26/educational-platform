@@ -8,4 +8,4 @@ Web-based platform with learning activities for students. Built using HTML, CSS,
 - Built for web browsers with a user-friendly design.
  
 ## Screenshot for home page 
-<img width="900" height="900" alt="Screenshot (2)" src="https://github.com/user-attachments/assets/1b18cbe4-60d7-46c0-aaa5-42efd5e2e027" />
+<img width="800" height="800" alt="Screenshot (2)" src="https://github.com/user-attachments/assets/1b18cbe4-60d7-46c0-aaa5-42efd5e2e027" />
